@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\StoreDevelopmentRequest;
 
 
 class DevelopmentController extends Controller
@@ -55,21 +56,15 @@ class DevelopmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreDevelopmentRequest $request)
     {
-        $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|unique:developments,email',
-            'phone'      => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:100',
-            'image'      => 'nullable|image|max:2048',
-        ]);
+        $data = $request->validated();
 
          if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('developments', 'public');
+            $data['image'] = $request->file('image')->store('developments', 'public');
         }
 
-        Development::create($validated);
+        Development::create($data);
 
         return redirect()->route('developments.index')->with('success', 'Data created successfully.');
     }
@@ -93,15 +88,9 @@ class DevelopmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Development $development)
+    public function update(StoreDevelopmentRequest $request, Development $development)
     {
-        $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|unique:developments,email,' . $development->id,
-            'phone'      => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:100',
-            'image'      => 'nullable|image|max:2048',
-        ]);
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
             // Delete old image if it exists
@@ -109,10 +98,10 @@ class DevelopmentController extends Controller
                 Storage::disk('public')->delete($development->image);
             }
 
-            $validated['image'] = $request->file('image')->store('developments', 'public');
+            $data['image'] = $request->file('image')->store('developments', 'public');
         }
 
-        $development->update($validated);
+        $development->update($data);
 
         return redirect()->route('developments.index')->with('success', 'Data updated successfully.');
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Custom_Controller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Department;
+use App\Http\Requests\StoreDepartmentRequest;
 
 class DepartmentController extends Controller
 {
@@ -37,10 +38,10 @@ class DepartmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreDepartmentRequest $request)
     {
-        $request->validate(['name' => 'required|string|max:255']);
-        Department::create(['name' => $request->name]);
+        $data = $request->validated();
+        Department::create($data);
 
         return redirect()->route('departments.index')->with('success', 'Department added.');
     }
@@ -64,11 +65,9 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Department $department)
+    public function update(StoreDepartmentRequest $request, Department $department)
     {
-        $data = $request->validate([
-        'name' => 'required|string|max:255',
-    ]);
+        $data = $request->validated();
 
         $department->update($data);
 

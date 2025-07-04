@@ -7,6 +7,7 @@ use App\Models\Marketing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreMarketingRequest;
 
 
 class MarketingController extends Controller
@@ -55,21 +56,15 @@ class MarketingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMarketingRequest $request)
     {
-        $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|unique:marketings,email',
-            'phone'      => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:100',
-            'image'      => 'nullable|image|max:2048',
-        ]);
+        $data = $request->validated();
 
          if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('marketings', 'public');
+            $data['image'] = $request->file('image')->store('marketings', 'public');
         }
 
-        Marketing::create($validated);
+        Marketing::create($data);
 
         return redirect()->route('marketings.index')->with('success', 'Data created successfully.');
     }
@@ -93,15 +88,9 @@ class MarketingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Marketing $marketing)
+    public function update(StoreMarketingRequest $request, Marketing $marketing)
     {
-        $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|unique:marketings,email,' . $marketing->id,
-            'phone'      => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:100',
-            'image'      => 'nullable|image|max:2048',
-        ]);
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
             // Delete old image if it exists
@@ -109,10 +98,10 @@ class MarketingController extends Controller
                 Storage::disk('public')->delete($marketing->image);
             }
 
-            $validated['image'] = $request->file('image')->store('marketings', 'public');
+            $data['image'] = $request->file('image')->store('marketings', 'public');
         }
 
-        $marketing->update($validated);
+        $marketing->update($data);
 
         return redirect()->route('marketings.index')->with('success', 'Data updated successfully.');
     }

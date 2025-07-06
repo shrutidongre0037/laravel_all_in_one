@@ -4,25 +4,24 @@ namespace App\Http\Controllers\Custom_Controller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Development;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreDevelopmentRequest;
-
+use App\Traits\ImageUploadTrait;
 
 class DevelopmentController extends Controller
 {
-
+    
     public function __construct()
     {
         $this->middleware('auth');
 
         $this->middleware(function ($request, $next) {
-            if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'hr' && Auth::user()->role !== 'development') {
-                abort(403, 'Unauthorized');
-            }
-            return $next($request);
+                if (!has_role('admin', 'hr', 'development')) {
+                     abort(403, 'Unauthorized');
+                }
+                return $next($request);
         });
     }
 
@@ -56,12 +55,13 @@ class DevelopmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    use  ImageUploadTrait;
     public function store(StoreDevelopmentRequest $request)
     {
         $data = $request->validated();
 
          if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('developments', 'public');
+            $data['image'] = $this->uploadImage($request->file('image'),'developments');     
         }
 
         Development::create($data);
@@ -93,12 +93,8 @@ class DevelopmentController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('image')) {
-            // Delete old image if it exists
-            if ($development->image) {
-                Storage::disk('public')->delete($development->image);
-            }
-
-            $data['image'] = $request->file('image')->store('developments', 'public');
+            $this->deleteImage($development->image);
+            $data['image']=$this->uploadImage($request->file('image'),'development');
         }
 
         $development->update($data);
@@ -145,7 +141,13 @@ class DevelopmentController extends Controller
                     return '<a href="' . route('developments.edit', $row->id) . '" class="btn   btn-primary">Edit</a>';
                 })
                 ->addColumn('delete', function($row) {
-                    return '<a href="' . route('developments.index', $row->id) . '" class="btn  btn-danger">Delete</a>';
+                return '
+                    <form method="POST" action="' . route('developments.destroy', $row->id) . '" style="display:inline;" onsubmit="return confirm(\'Are you sure?\')">
+                        ' . csrf_field() . '
+                        ' . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                ';
                 })
                 ->addColumn('view', function($row) {
                     return '<a href="' . route('developments.show', $row->id) . '" class="btn   btn-warning">View</a>';

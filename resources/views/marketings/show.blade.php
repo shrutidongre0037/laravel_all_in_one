@@ -3,7 +3,7 @@
         <h2 class="text-2xl font-bold mb-4">Employee Details</h2>
 @if($marketing->image)
             <div class="mb-4 text-center">
-                <img src="{{ asset('storage/' . $marketing->image) }}" alt="Employee Image" class="h-30 mt-2 text-center ml-96 mr-80">
+                <img src="{{ asset('storage/' . $marketing->image) }}" alt="Employee Image" class="h-20 mt-2 text-center ml-96 mr-80">
             </div>
         @endif
         <div class="mb-4">

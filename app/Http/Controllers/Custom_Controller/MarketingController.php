@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreMarketingRequest;
+use App\Traits\ImageUploadTrait;
 
 
 class MarketingController extends Controller
@@ -56,12 +57,15 @@ class MarketingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+     use ImageUploadTrait;
     public function store(StoreMarketingRequest $request)
     {
         $data = $request->validated();
 
          if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('marketings', 'public');
+            $data['image']= $this->uploadImage($request->file('image'),'marketings');    
+
         }
 
         Marketing::create($data);
@@ -93,12 +97,8 @@ class MarketingController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('image')) {
-            // Delete old image if it exists
-            if ($marketing->image) {
-                Storage::disk('public')->delete($marketing->image);
-            }
-
-            $data['image'] = $request->file('image')->store('marketings', 'public');
+            $this->deleteImage($marketing->image);
+            $data['image']=$this->uploadImage($request->file('image'),'marketings');
         }
 
         $marketing->update($data);

@@ -57,7 +57,7 @@
                             </td>
                             <th>
                                 <a href="{{ route('marketings.show', $mar->id) }}"
-                                        class="bg-indigo-500 text-white px-3 py-1 rounded hover:bg-indigo-600">
+                                        class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
                                         View
                                 </a>
                             </th>

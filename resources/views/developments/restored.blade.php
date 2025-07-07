@@ -45,7 +45,7 @@
                                 <form action="{{ route('developments.forceDeleted', $dev->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger btn-sm">Force Delete</button>
+                                    <button class="btn btn-danger btn-sm">ForceDelete</button>
                                 </form>
                             </td>
                         </tr>

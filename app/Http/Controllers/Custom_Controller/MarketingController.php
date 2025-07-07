@@ -101,7 +101,8 @@ class MarketingController extends Controller
             $data['image']=$this->uploadImage($request->file('image'),'marketings');
         }
 
-        $marketing->update($data);
+        $marketing->fill($data); 
+        $marketing->save(); 
 
         return redirect()->route('marketings.index')->with('success', 'Data updated successfully.');
     }

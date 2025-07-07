@@ -32,4 +32,21 @@ public $incrementing = false;
     {
         return 'id'; // This is default, but explicitly setting it is good practice for UUIDs
     }
+
+    public function getNameAttribute($value)
+    {
+        return ucwords($value);
+    }
+
+     public function setEmailAttribute($value)
+    {
+        $this->attributes['email']=strtolower($value);
+    } 
+public function getImageAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        }
+        return 'marketings/default.png';
+    }
 }

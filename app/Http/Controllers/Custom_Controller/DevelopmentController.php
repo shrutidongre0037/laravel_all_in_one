@@ -64,7 +64,7 @@ class DevelopmentController extends Controller
             $data['image'] = $this->uploadImage($request->file('image'),'developments');     
         }
 
-        Development::create($data);
+        $dev=Development::create($data);
 
         return redirect()->route('developments.index')->with('success', 'Data created successfully.');
     }
@@ -97,7 +97,8 @@ class DevelopmentController extends Controller
             $data['image']=$this->uploadImage($request->file('image'),'development');
         }
 
-        $development->update($data);
+        $development->fill($data); 
+        $development->save(); 
 
         return redirect()->route('developments.index')->with('success', 'Data updated successfully.');
     }
@@ -131,11 +132,11 @@ class DevelopmentController extends Controller
     {
         if ($request->ajax()) {
             $development = Development::select(['id','name', 'email', 'phone', 'address', 'image']);
-
             return DataTables::of($development)
             ->addIndexColumn()
                 ->addColumn('image', function($row) {
-                    return '<img src="' . asset('storage/' . $row->image) . '" width="60" height="90">';
+                    $src = asset('storage/' . $row->image); // from accessor
+                    return '<img src="' . $src . '" width="60" height="90">';
                 })
                 ->addColumn('edit', function($row) {
                     return '<a href="' . route('developments.edit', $row->id) . '" class="btn   btn-primary">Edit</a>';
@@ -155,5 +156,6 @@ class DevelopmentController extends Controller
                 ->rawColumns(['image', 'edit', 'delete', 'view'])
                 ->make(true);
         }
+
     }
 }

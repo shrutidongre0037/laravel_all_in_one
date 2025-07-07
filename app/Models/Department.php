@@ -28,4 +28,9 @@ class Department extends Model
     {
         return 'id'; // This is default, but explicitly setting it is good practice for UUIDs
     }
+
+    public function getNameAttribute($value)
+    {
+        return ucwords($value);
+    }
 }

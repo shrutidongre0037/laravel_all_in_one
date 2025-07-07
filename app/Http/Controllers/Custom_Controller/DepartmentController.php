@@ -69,7 +69,8 @@ class DepartmentController extends Controller
     {
         $data = $request->validated();
 
-        $department->update($data);
+        $department->fill($data); 
+        $department->save(); 
 
         return redirect()->route('departments.index')->with('success', 'Department updated successfully.');
     }

@@ -64,7 +64,7 @@ class DevelopmentController extends Controller
             $data['image'] = $this->uploadImage($request->file('image'),'developments');     
         }
 
-        $dev=Development::create($data);
+        Development::create($data);
 
         return redirect()->route('developments.index')->with('success', 'Data created successfully.');
     }

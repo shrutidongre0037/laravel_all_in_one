@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreDevelopmentRequest;
 use App\Traits\ImageUploadTrait;
+use App\Events\DevelopmentCreated;
 
 class DevelopmentController extends Controller
 {
@@ -64,7 +65,9 @@ class DevelopmentController extends Controller
             $data['image'] = $this->uploadImage($request->file('image'),'developments');     
         }
 
-        Development::create($data);
+        $development=Development::create($data);
+
+        event(new DevelopmentCreated($development));
 
         return redirect()->route('developments.index')->with('success', 'Data created successfully.');
     }

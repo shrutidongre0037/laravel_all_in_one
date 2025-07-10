@@ -14,7 +14,7 @@ class DashboardBox extends Component
      */
     public function __construct($title, $count, $icon)
     {
-       $this->title = $title;
+        $this->title = $title;
         $this->count = $count;
         $this->icon = $icon;
     }

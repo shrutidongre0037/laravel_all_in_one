@@ -15,7 +15,7 @@
     @endif
 
     <!-- Development Card -->
-     @if (has_role('admin', 'hr', 'development'))
+    @if (has_role('admin', 'hr', 'development'))
     <a href="{{ route('developments.index') }}" class="block">
         <x-dashboard-box title="Development Member" count="{{ $developmentCount }}" icon="💻" />
     </a>

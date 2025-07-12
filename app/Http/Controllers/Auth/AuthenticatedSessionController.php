@@ -34,10 +34,15 @@ class AuthenticatedSessionController extends Controller
     // Redirect by role
     if ($user->role === 'admin' || $user->role === 'hr') {
         return redirect()->route('dashboard');
-    } elseif ($user->role === 'development') {
+    } 
+    elseif ($user->role === 'development') {
         return redirect()->route('developments.index');
-    } elseif ($user->role === 'marketing') {
+    } 
+    elseif ($user->role === 'marketing') {
         return redirect()->route('marketings.index');
+    }
+    elseif ($user->role === 'project') {
+        return redirect()->route('projects.index');
     }
 
     return redirect()->route('dashboard');

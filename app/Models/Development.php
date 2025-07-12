@@ -15,7 +15,7 @@ class Development extends Model
     
     use HasFactory, Notifiable, SoftDeletes;
     protected $dates = ['deleted_at'];
-    protected $fillable = ['name', 'email', 'phone', 'address', 'image'];
+    protected $fillable = ['name', 'email', 'phone', 'address', 'image','department_id'];
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -84,6 +84,18 @@ class Development extends Model
             return $value;
         }
         return 'developments/default.png';
+    }
+
+    //one to many relationship
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    //many to many relationship
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class);
     }
 
 }

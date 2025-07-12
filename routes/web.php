@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Custom_Controller\DepartmentController;
 use App\Http\Controllers\Custom_Controller\DevelopmentController;
 use App\Http\Controllers\Custom_Controller\MarketingController;
+use App\Http\Controllers\Custom_Controller\ProjectController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,8 +55,7 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
 
     //development resource
     Route::resource('developments', DevelopmentController::class);
-    Route::get('/devlopments', [DevelopmentController::class, 'index'])->name('devlopments.index');
-    Route::get('/devlopments/data', [DevelopmentController::class, 'getDevelopment'])->name('developments.data');
+    Route::get('/developments/data', [DevelopmentController::class, 'getDevelopment'])->name('developments.data');
     Route::patch('developments/{id}/restore', [DevelopmentController::class, 'restore'])->name('developments.restore');
     Route::delete('developments/{id}/force-delete', [DevelopmentController::class, 'forceDeleted'])->name('developments.forceDeleted');
 
@@ -63,7 +63,29 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
     Route::resource('marketings', MarketingController::class);
     Route::patch('marketings/{id}/restore', [MarketingController::class, 'restore'])->name('marketings.restore');
     Route::delete('marketings/{id}/force-delete', [MarketingController::class, 'forceDeleted'])->name('marketings.forceDeleted');
+
+    //projects resources
+    Route::get('/projects-data', [ProjectController::class, 'getProject'])->name('projects.data');
+    Route::resource('projects', ProjectController::class);
+    Route::patch('projects/{id}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
+    Route::delete('projects/{id}/force-delete', [ProjectController::class, 'forceDeleted'])->name('projects.forceDeleted');
+
+ 
+    
 });
+
+Route::get('projects',function(){
+    return view('projects.index');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/projects-data', [ProjectController::class, 'getProject'])->name('projects.data');
+    Route::resource('projects', ProjectController::class);
+    Route::patch('projects/{id}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
+    Route::delete('projects/{id}/force-delete', [ProjectController::class, 'forceDeleted'])->name('projects.forceDeleted');
+    
+
+}); 
 
 
 Route::middleware('auth')->group(function () {

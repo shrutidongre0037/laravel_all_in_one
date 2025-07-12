@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Department;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Development>
@@ -24,6 +25,7 @@ class DevelopmentFactory extends Factory
             'phone' => $this->faker->phoneNumber,
             'address' => $this->faker->address,
             'image' => 'developments/' . $this->faker->randomElement($dummyImages),
+            'department_id' => Department::inRandomOrder()->first()->id,
         ];
     }
 }

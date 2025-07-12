@@ -24,6 +24,8 @@
                         <th class="p-3">Phone</th>
                         <th class="p-3">Address</th>
                         <th class="p-3">Images</th>
+                        <th class="p-3">Department</th>
+                        <th class="p-3">Projects</th>
                         <th class="p-3">Edit</th>
                         <th class="p-3">Delete</th>
                         <th class="p-3">View</th>
@@ -46,6 +48,19 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route('developments.data') }}",
+            "columnDefs": [
+        { "width": "150px", "targets": 0 }, // Name
+        { "width": "200px", "targets": 1 }, // Email
+        { "width": "120px", "targets": 2 }, // Phone
+        { "width": "200px", "targets": 3 }, // Address
+        { "width": "100px", "targets": 4 }, // Image
+        { "width": "150px", "targets": 5 }, // Department
+        { "width": "100px", "targets": 6 }, // Projects
+        { "width": "80px",  "targets": 7 }, // Edit
+        { "width": "80px",  "targets": 8 }, // Delete
+        { "width": "80px",  "targets": 9 }, // View
+    ],
+    "autoWidth": false,
             columns: [
                  { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                 { data: 'name' },
@@ -53,12 +68,17 @@
                 { data: 'phone' },
                 { data: 'address' },
                 { data: 'image', orderable: false, searchable: false },
+                { data: 'department', name: 'department' },
+                { data: 'projects', name: 'projects', orderable: false, searchable: false },
                 { data: 'edit', orderable: false, searchable: false },
                 { data: 'delete', orderable: false, searchable: false },
                 { data: 'view', orderable: false, searchable: false },
             ]
         });
     });
+
+
+
 </script>
 @endpush
 </x-app-layout>

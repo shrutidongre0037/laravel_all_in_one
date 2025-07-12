@@ -44,12 +44,15 @@
                     <x-nav-link :href="route('developments.index')" :active="request()->routeIs('developments.index')">
                         {{ __('Development') }}
                     </x-nav-link>
-                     <x-nav-link :href="route('marketings.index')" :active="request()->routeIs('marketings.index')">
+                    
+                    <x-nav-link :href="route('marketings.index')" :active="request()->routeIs('marketings.index')">
                         {{ __('Marketing') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('marketings.index')" :active="request()->routeIs('marketings.index')">
+                    
+                    <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.index')">
                         {{ __('Project') }}
                     </x-nav-link>
+
                     @endif
 
                 </div>

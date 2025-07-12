@@ -10,6 +10,8 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreDevelopmentRequest;
 use App\Traits\ImageUploadTrait;
 use App\Events\DevelopmentCreated;
+use App\Models\Department;
+use App\Models\Project;
 
 class DevelopmentController extends Controller
 {
@@ -41,7 +43,6 @@ class DevelopmentController extends Controller
         {
             $development = Development::all();
             return view('developments.index', compact('development'));
-    
         }
     }
 
@@ -50,7 +51,10 @@ class DevelopmentController extends Controller
      */
     public function create()
     {
-        return view('developments.create');
+        $departments = Department::all(); 
+        $projects = Project::all();
+
+        return view('developments.create',compact('departments','projects'));
     }
 
     /**
@@ -65,7 +69,14 @@ class DevelopmentController extends Controller
             $data['image'] = $this->uploadImage($request->file('image'),'developments');     
         }
 
-        $development=Development::create($data);
+        $development = Development::create($request->only([
+        'name', 'email', 'phone', 'address', 'department_id'
+        ]));
+
+        if ($request->has('project_ids')) 
+        {
+            $development->projects()->sync($request->project_ids);
+        }
 
         event(new DevelopmentCreated($development));
 
@@ -100,6 +111,9 @@ class DevelopmentController extends Controller
             $data['image']=$this->uploadImage($request->file('image'),'development');
         }
 
+        if ($request->has('project_ids')) {
+            $development->projects()->sync($request->project_ids);
+        }
         $development->fill($data); 
         $development->save(); 
 
@@ -134,8 +148,17 @@ class DevelopmentController extends Controller
      public function getDevelopment(Request $request)
     {
         if ($request->ajax()) {
-            $development = Development::select(['id','name', 'email', 'phone', 'address', 'image']);
-            return DataTables::of($development)
+            $development = Development::with(['department', 'projects'])->select([
+    'id', 'name', 'email', 'phone', 'address', 'image', 'department_id'
+]);
+        return DataTables::of($development)
+        ->addColumn('projects', function ($row) {
+    return $row->projects->pluck('title')->implode('<br>');
+})
+            ->addIndexColumn()
+            ->addColumn('department', function($row) {
+                return $row->department ? $row->department->name : 'N/A';
+            })
             ->addIndexColumn()
                 ->addColumn('image', function($row) {
                     $src = asset('storage/' . $row->image); // from accessor

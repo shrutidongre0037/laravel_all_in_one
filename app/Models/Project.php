@@ -4,39 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 
-class Department extends Model
+class Project extends Model
 {
     use HasFactory;
-    protected $fillable=['name'];
+
+    use SoftDeletes;
+
     public $incrementing = false;
     protected $keyType = 'string';
-
+    protected $fillable = ['title', 'description', 'start_date', 'end_date'];
 
     protected static function boot()
     {
         parent::boot();
-
         static::creating(function ($model) {
-            $model->id = (string) Str::uuid(); 
+            $model->id = Str::uuid();
         });
-    }
-
-    public function getRouteKeyName()
-    {
-        return 'id'; // This is default, but explicitly setting it is good practice for UUIDs
-    }
-
-    public function getNameAttribute($value)
-    {
-        return ucwords($value);
     }
 
     public function developments()
     {
-        return $this->hasMany(Development::class);
+        return $this->belongsToMany(Development::class);
     }
-
 }

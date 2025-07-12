@@ -29,6 +29,8 @@ class StoreDevelopmentRequest extends FormRequest
             'phone'   => 'nullable|string|max:20',
             'address' => 'nullable|string|max:100',
             'image'   => 'nullable|image|max:2048',
+            'department_id' => 'required|exists:departments,id',
+            'project_ids' => 'nullable|array',
         ];
     }
 }

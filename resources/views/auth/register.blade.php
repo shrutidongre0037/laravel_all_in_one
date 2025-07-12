@@ -24,6 +24,7 @@
                 <option value="hr">HR</option>
                 <option value="development">Development</option>
                 <option value="marketing">Marketing</option>
+                <option value="project">Project</option>
             </select>
         </div>
 

@@ -14,7 +14,27 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-<style>[x-cloak] { display: none; }</style>
+
+<style>
+    [x-cloak] { display: none; }
+    /* Fix the width and spacing of the 'Show entries' select dropdown */
+    div.dataTables_length select {
+        width: auto !important;     /* auto width based on content */
+        min-width: 60px;            /* ensure minimum width */
+        padding: 4px 8px;           /* inner padding */
+        border: 1px solid #ccc;     /* optional: add border */
+        border-radius: 4px;         /* smooth corners */
+        background-color: white;    /* ensure background visibility */
+    }
+
+    /* Optional: align the label and select nicely */
+    div.dataTables_length label {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* space between "Show" and dropdown */
+    }
+</style>
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>

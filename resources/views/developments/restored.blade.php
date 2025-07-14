@@ -6,7 +6,7 @@
         <div class="alert alert-warning">No deleted users found.</div>
     @else
         <div class="overflow-x-auto">
-            <table id="myTable" class="min-w-full bg-white shadow-md rounded-lg">
+            <table id="myTable" class="table-auto w-full bg-white shadow-md rounded-lg text-sm">
                 <thead class="bg-gray-200 text-gray-700">
                     <tr class="text-center">
                         <th class="p-3">#</th>

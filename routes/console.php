@@ -17,3 +17,12 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+
+Artisan::command('custom:clear', function () {
+    $this->call('config:clear');  // clear config cache
+    $this->call('route:clear');   // clear route cache
+    $this->call('cache:clear');   // clear app cache
+    $this->call('view:clear');   // clear view cache
+    $this->info('All cleared successfully!');
+})->purpose('Clear config, route, cache and view');

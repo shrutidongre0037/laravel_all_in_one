@@ -69,9 +69,7 @@ class DevelopmentController extends Controller
             $data['image'] = $this->uploadImage($request->file('image'),'developments');     
         }
 
-        $development = Development::create($request->only([
-        'name', 'email', 'phone', 'address', 'department_id'
-        ]));
+        $development = Development::create($data);
 
         if ($request->has('project_ids')) 
         {
@@ -82,12 +80,12 @@ class DevelopmentController extends Controller
 
         return redirect()->route('developments.index')->with('success', 'Data created successfully.');
     }
-
     /**
      * Display the specified resource.
      */
     public function show(Development $development)
     {
+        $development->load(['department', 'projects']);
         return view('developments.show', compact('development'));
     }
 
@@ -96,7 +94,9 @@ class DevelopmentController extends Controller
      */
     public function edit(Development $development)
     {
-        return view('developments.edit', compact('development'));
+        $departments = Department::all(); // <-- this is missing
+        $projects = Project::all(); 
+        return view('developments.edit', compact('development','departments','projects'));
     }
 
     /**
@@ -108,17 +108,23 @@ class DevelopmentController extends Controller
 
         if ($request->hasFile('image')) {
             $this->deleteImage($development->image);
-            $data['image']=$this->uploadImage($request->file('image'),'development');
+            $data['image'] = $this->uploadImage($request->file('image'), 'developments');
         }
 
+        // Fill validated data
+        $development->fill($data);
+
+        // Save updated fields
+        $development->save();
+
+        // Sync project_ids if present
         if ($request->has('project_ids')) {
             $development->projects()->sync($request->project_ids);
         }
-        $development->fill($data); 
-        $development->save(); 
 
         return redirect()->route('developments.index')->with('success', 'Data updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -12,6 +12,9 @@
     <a href="{{ route('departments.index') }}" class="block">
         <x-dashboard-box title="Departments" count="{{ $departmentCount }}" icon="🏫" />
     </a>
+    <a href="{{ route('projects.index') }}" class="block">
+        <x-dashboard-box title="Projects" count="{{ $projectCount }}" icon="🏫" />
+    </a>
     @endif
 
     <!-- Development Card -->

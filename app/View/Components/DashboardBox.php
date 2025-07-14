@@ -8,15 +8,14 @@ use Illuminate\View\Component;
 
 class DashboardBox extends Component
 {
-    public $title, $count, $icon;
+    public $title, $count;
     /**
      * Create a new component instance.
      */
-    public function __construct($title, $count, $icon)
+    public function __construct($title, $count)
     {
         $this->title = $title;
         $this->count = $count;
-        $this->icon = $icon;
     }
 
     /**

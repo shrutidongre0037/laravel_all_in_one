@@ -46,6 +46,7 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
             'departmentCount' => $user->role === 'admin' ? \App\Models\Department::count() : null,
             'developmentCount' => \App\Models\Development::count(),
             'marketingCount' => \App\Models\Marketing::count(),
+            'projectCount' => \App\Models\Project::count(),
 
         ]);
     })->name('dashboard');

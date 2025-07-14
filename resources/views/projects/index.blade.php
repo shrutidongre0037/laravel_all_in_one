@@ -1,9 +1,13 @@
 <x-app-layout>
     <div class="container mx-auto py-10">
-        <a href="{{ route('projects.create') }}" class="btn btn-primary mb-3">Add Project</a>
-            <a class="px-4 py-2 bg-blue-500 text-white rounded ml-5 mb-5" href="{{ route('projects.index',['deleted' => 1]) }}">Restore</a>
 
+             <div class="text-left mb-4">
+            <a href="{{ route('projects.create') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Add Project</a>
+            <a class="px-4 py-2 bg-blue-500 text-white rounded" href="{{ route('projects.index',['deleted' => 1]) }}">Restore</a>
 
+        </div>
+
+            
         <table id="table" class="display min-w-full bg-white shadow-md rounded-lg">
                 <thead class="bg-gray-200 text-gray-700">
                     <tr class="text-center">

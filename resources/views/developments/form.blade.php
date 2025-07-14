@@ -11,12 +11,14 @@
     </select>
 
 
-    <label for="project_ids">Assign Projects:</label>
-    <select name="project_ids[]" id="project_ids" multiple class="w-full border p-2 mb-4">
-        @foreach($projects as $project)
-            <option value="{{ $project->id }}">{{ $project->title }}</option>
-        @endforeach
-    </select>
+   <select name="project_ids[]" id="project_ids" multiple class="w-full border p-2 mb-4">
+    @foreach($projects as $project)
+        <option value="{{ $project->id }}" 
+            {{ isset($development) && $development->projects->contains($project->id) ? 'selected' : '' }}>
+            {{ $project->title }}
+        </option>
+    @endforeach
+</select>
 
 <input type="file" name="image" class="w-full border p-2 mb-4" placeholder="Employee Image" value="{{ old('image', $development->image ?? '') }}"  >
 @if(!empty($development->image))

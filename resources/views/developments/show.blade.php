@@ -18,6 +18,22 @@
         <div class="mb-4">
             <strong>Address:</strong> {{ $development->address }}
         </div>
+        <div class="mb-4">
+    <strong>Department:</strong> {{ $development->department->name ?? 'N/A' }}
+</div>
+
+<div class="mb-4 ml-0">
+    <strong>Projects:</strong>
+    @if($development->projects->isNotEmpty())
+        <ul class="list-disc list-inside text-center">
+            @foreach($development->projects as $project)
+                <li>{{ $project->title }}</li>
+            @endforeach
+        </ul>
+    @else
+        None Assigned
+    @endif
+</div>
 
         
 

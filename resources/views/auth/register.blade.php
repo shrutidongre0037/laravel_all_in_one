@@ -19,7 +19,7 @@
         <!-- Role -->
         <div class="mt-4">
             <x-input-label for="role" :value="__('Role')" />
-            <select name="role" id="role" class="block mt-1 w-full border-gray-300 rounded">
+            <select name="role" id="role" class="block mt-1 w-full border-gray-300 rounded" required>
                 <option value="admin">admin</option>
                 <option value="hr">HR</option>
                 <option value="development">Development</option>
@@ -27,6 +27,15 @@
                 <option value="project">Project</option>
             </select>
         </div>
+        <!-- <div class="mt-4">
+            <x-input-label for="tenant_id" :value="__('Tenant')" />
+        <select name="tenant_id" id="tenant_id" class="block mt-1 w-full border-gray-300 rounded"required>
+             @foreach(\App\Models\Tenant::all() as $tenant)
+                <option value="{{ $tenant->id }}">{{ $tenant->name }}</option>
+            @endforeach
+        </select>
+        </div> -->
+
 
         <!-- Password -->
         <div class="mt-4">

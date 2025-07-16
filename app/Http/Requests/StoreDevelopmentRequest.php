@@ -21,7 +21,7 @@ class StoreDevelopmentRequest extends FormRequest
      */
     public function rules(): array
     {
-        $developmentId = $this->route('development')?->id; // Get ID from route model binding
+        $developmentId = $this->route('development'); // Get ID from route model binding
 
         return [
             'name'    => 'required|string|max:255',

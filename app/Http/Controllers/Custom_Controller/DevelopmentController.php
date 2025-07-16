@@ -85,8 +85,9 @@ class DevelopmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Development $development)
+    public function show($id)
     {
+        $development = Development::findOrFail($id);
         $development->load(['department', 'projects']);
         return view('developments.show', compact('development'));
     }
@@ -94,8 +95,10 @@ class DevelopmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Development $development)
+    public function edit($id)
     {
+        $development = Development::findOrFail($id);
+
         $departments = Department::all(); // <-- this is missing
         $projects = Project::all(); 
         return view('developments.edit', compact('development','departments','projects'));
@@ -104,10 +107,10 @@ class DevelopmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreDevelopmentRequest $request, Development $development)
+    public function update(StoreDevelopmentRequest $request, $id)
     {
+        $development = Development::findOrFail($id);
         $data = $request->validated();
-
         if ($request->hasFile('image')) {
             $this->deleteImage($development->image);
             $data['image'] = $this->uploadImage($request->file('image'), 'developments');
@@ -123,7 +126,6 @@ class DevelopmentController extends Controller
         if ($request->has('project_ids')) {
             $development->projects()->sync($request->project_ids);
         }
-
         return redirect()->route('developments.index')->with('success', 'Data updated successfully.');
     }
 

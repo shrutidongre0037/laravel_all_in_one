@@ -67,8 +67,9 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show($id)
     {
+        $project = Project::findOrFail($id);
         return view('projects.show', compact('project'));
 
     }
@@ -76,16 +77,18 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Project $project)
+    public function edit($id)
     {
+        $project = Project::findOrFail($id);
           return view('projects.edit', compact('project'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreProjectRequest $request, Project $project)
+    public function update(StoreProjectRequest $request, $id)
     {
+        $project = Project::findOrFail($id);
         $project->update($request->validated());
         return redirect()->route('projects.index')->with('success', 'Project updated.');
     }
@@ -93,9 +96,10 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy($id)
     {
-         $project->delete();
+        $project = Project::findOrFail($id);
+        $project->delete();
         return redirect()->route('projects.index')->with('success', 'Project deleted.');
     }
 

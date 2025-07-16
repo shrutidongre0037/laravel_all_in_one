@@ -26,6 +26,11 @@ class Project extends Model
         });
     }
 
+    public function getRouteKeyName()
+    {
+        return 'id'; // Ensures route model binding uses UUID
+    }
+
     public function developments()
     {
         return $this->belongsToMany(Development::class);

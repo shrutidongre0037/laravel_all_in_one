@@ -48,13 +48,13 @@
                     <x-nav-link :href="route('marketings.index')" :active="request()->routeIs('marketings.index')">
                         {{ __('Marketing') }}
                     </x-nav-link>
-                    
-                    <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.index')">
-                        {{ __('Project') }}
-                    </x-nav-link>
-
                     @endif
-
+                    
+                    @if(Auth::user()->role === 'admin')
+                        <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.index')">
+                            {{ __('Project') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 

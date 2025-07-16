@@ -68,8 +68,10 @@ class DevelopmentController extends Controller
          if ($request->hasFile('image')) {
             $data['image'] = $this->uploadImage($request->file('image'),'developments');     
         }
-
         $development = Development::create($data);
+            // dump($request->all());
+            //dd($data);
+            //ddd($data);
 
         if ($request->has('project_ids')) 
         {

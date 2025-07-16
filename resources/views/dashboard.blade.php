@@ -12,9 +12,7 @@
     <a href="{{ route('departments.index') }}" class="block">
         <x-dashboard-box title="Departments" count="{{ $departmentCount }}" icon="🏫" />
     </a>
-    <a href="{{ route('projects.index') }}" class="block">
-        <x-dashboard-box title="Projects" count="{{ $projectCount }}" icon="🏫" />
-    </a>
+    
     @endif
 
     <!-- Development Card -->
@@ -28,6 +26,12 @@
     @if (has_role('admin', 'hr', 'marketing'))
      <a href="{{ route('marketings.index') }}" class="block">
         <x-dashboard-box title="Marketing Member" count="{{ $marketingCount }}" icon="💻" />
+    </a>
+    @endif
+
+    @if (has_role('admin') && $projectCount !== null)
+    <a href="{{ route('projects.index') }}" class="block">
+        <x-dashboard-box title="Projects" count="{{ $projectCount }}" icon="🏫" />
     </a>
     @endif
 

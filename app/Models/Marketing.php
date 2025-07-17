@@ -13,6 +13,7 @@ class Marketing extends Model
 {
     
     use HasFactory, Notifiable, SoftDeletes;
+    protected $connection = 'tenant';
     protected $dates = ['deleted_at'];
     protected $fillable = ['name', 'email', 'phone', 'address', 'image'];
 public $incrementing = false;

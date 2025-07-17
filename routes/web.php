@@ -42,13 +42,25 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
         //     abort(403, 'Unauthorized');
         // }
 
-        return view('dashboard',[
-            'departmentCount' => $user->role === 'admin' ? \App\Models\Department::count() : null,
-            'developmentCount' => \App\Models\Development::count(),
-            'marketingCount' => \App\Models\Marketing::count(),
-            'projectCount' => \App\Models\Project::count(),
+        $departmentCount = null;
+        $developmentCount = null;
+        $marketingCount = null;
+        $projectCount = null;
 
-        ]);
+        if ($user->tenant_id) {
+            // Only count if user is linked to a tenant
+            $departmentCount = $user->role === 'admin' ? \App\Models\Department::count() : null;
+            $developmentCount = \App\Models\Development::count();
+            $marketingCount = \App\Models\Marketing::count();
+            $projectCount = \App\Models\Project::count();
+        }
+
+        return view('dashboard', compact(
+            'departmentCount',
+            'developmentCount',
+            'marketingCount',
+            'projectCount'
+        ));
     })->name('dashboard');
 
     //department resource

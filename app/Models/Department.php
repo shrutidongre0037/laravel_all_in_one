@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 class Department extends Model
 {
     use HasFactory;
+    protected $connection = 'tenant';
     protected $fillable=['name'];
     public $incrementing = false;
     protected $keyType = 'string';

@@ -1,20 +1,18 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Tenant;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Marketing;
+use App\Models\Development;
 
-
-class MarketingSeeder extends Seeder
+class DevelopmentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        
-
+        Development::factory()->count(500)->create();
     }
 }

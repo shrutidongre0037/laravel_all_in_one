@@ -20,7 +20,7 @@ class MarketingFactory extends Factory
 
         return [
             'name' => $this->faker->name,
-            'email' => $this->faker->unique()->safeEmail,
+            'email' => $this->faker->unique()->email,
             'phone' => $this->faker->phoneNumber,
             'address' => $this->faker->address,
             'image' => 'marketings/' . $this->faker->randomElement($dummyImages),

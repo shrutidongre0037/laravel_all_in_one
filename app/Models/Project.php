@@ -14,6 +14,7 @@ class Project extends Model
 
     use SoftDeletes;
 
+    protected $connection = 'tenant';
     public $incrementing = false;
     protected $keyType = 'string';
     protected $fillable = ['title', 'description', 'start_date', 'end_date'];

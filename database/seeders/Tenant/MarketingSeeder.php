@@ -1,11 +1,10 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Tenant;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Marketing;
-
 
 class MarketingSeeder extends Seeder
 {
@@ -14,7 +13,6 @@ class MarketingSeeder extends Seeder
      */
     public function run(): void
     {
-        
-
+        Marketing::factory()->count(500)->create();
     }
 }

@@ -42,21 +42,10 @@ class CreateTenant extends Command
             'database' => $dbName,
         ]);
 
-        Config::set('database.connections.mysql.database', $dbName);
-        DB::purge('mysql');
+        Config::set('database.connections.tenant.database', $dbName);
+        DB::purge('tenant');
+        DB::reconnect('tenant');
         Artisan::call('migrate', ['--force' => true]);
-
-        User::create([
-            'name' => 'Admin ' . $name,
-            'email' => 'admin@' . strtolower($name) . '.com',
-            'password' => Hash::make('password'),
-            'tenant_id' => $tenant->id,
-            'role' => 'admin'
-        ]);
-        Artisan::call('db:seed', [
-            '--class' => 'TenantSeeder',
-            '--force' => true
-        ]);
         $this->info("Tenant created successfully with database: $dbName");
     }
 }

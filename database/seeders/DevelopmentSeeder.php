@@ -13,6 +13,6 @@ class DevelopmentSeeder extends Seeder
      */
     public function run(): void
     {
-        Development::factory()->count(500)->create();
+        
     }
 }

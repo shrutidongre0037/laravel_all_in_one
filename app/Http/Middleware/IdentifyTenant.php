@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tenant;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 
 
@@ -28,9 +29,12 @@ class IdentifyTenant
                 abort(403,'No tenant Assigned');
             }
             //for setup for dynammic tenant DB
-            Config::set('database.connections.mysql.database',$tenant->database);
-            DB::purge('mysql');
-            DB::reconnect('mysql');
+            Config::set('database.connections.tenant.database',$tenant->database);
+            DB::purge('tenant');
+            DB::reconnect('tenant');
+            DB::setDefaultConnection('tenant');
+            Log::info('Switched to tenant DB: ' . $tenant->database);
+
         }
         return $next($request);
     }

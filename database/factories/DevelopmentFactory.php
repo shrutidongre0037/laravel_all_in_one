@@ -21,7 +21,7 @@ class DevelopmentFactory extends Factory
 
         return [
             'name' => $this->faker->name,
-            'email' => $this->faker->unique()->safeEmail,
+            'email' => $this->faker->unique()->email,
             'phone' => $this->faker->phoneNumber,
             'address' => $this->faker->address,
             'image' => 'developments/' . $this->faker->randomElement($dummyImages),

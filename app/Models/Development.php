@@ -14,6 +14,7 @@ class Development extends Model
 {
     
     use HasFactory, Notifiable, SoftDeletes;
+    protected $connection = 'tenant';
     protected $dates = ['deleted_at'];
     protected $fillable = ['name', 'email', 'phone', 'address', 'image','department_id'];
     public $incrementing = false;

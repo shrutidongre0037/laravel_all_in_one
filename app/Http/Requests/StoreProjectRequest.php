@@ -28,4 +28,51 @@ class StoreProjectRequest extends FormRequest
             'end_date' => 'required|date|after_or_equal:start_date',
         ];
     }
+
+    public function attributes(): array
+    {   
+        return[
+            'title' => 'Project title',
+            'description' => 'Project description',
+            'start_date' => 'Start Date',
+            'end_date' => 'End Date',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'Please enter Project title.',
+            'title.string'  =>'Project title must be valid string.',
+            'title.max' => 'Project title cannot exceed 255 character.',
+
+            'start_date.required' =>'Start Date is required.',
+            'start_date.date' => 'Start Date must be valid date.',
+
+            'end_date.required' =>'End Date is required.',
+            'end_date.date' => 'End Date must be valid date.',
+            'end_date.after_or_equal' => 'End date must be after or equal to the start date.',
+
+
+        ];      
+    }
+
+     public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            // Example: Title cannot be numeric-only
+            if (is_numeric($this->title)) {
+                $validator->errors()->add('title', 'Project title cannot be only numbers.');
+            }
+
+            // Example: Prevent use of certain words in title
+            $bannedWords = ['test', 'demo', 'dummy'];
+            foreach ($bannedWords as $word) {
+                if (stripos($this->title, $word) !== false) {
+                    $validator->errors()->add('title', "The title cannot contain the word '{$word}'.");
+                    break;
+                }
+            }
+        });
+    }
 }

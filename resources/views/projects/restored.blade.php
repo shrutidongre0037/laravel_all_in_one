@@ -3,7 +3,7 @@
         <h2 class="text-xl font-bold mb-6 text-center">🗑️ Trashed Project</h2>
 
     @if ($project->isEmpty())
-        <div class="alert alert-warning">No deleted users found.</div>
+        <div class="alert alert-warning">No deleted project found.</div>
     @else
         <div class="overflow-x-auto">
             <table id="myTable" class="table-auto w-full bg-white shadow-md rounded-lg text-sm">

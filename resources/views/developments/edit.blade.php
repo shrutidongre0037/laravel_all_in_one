@@ -4,7 +4,10 @@
         <form method="POST" action="{{ route('developments.update', $development->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
-            @include('developments.form', ['submitButtonText' => 'Update'])
+            @include('developments.form', [
+                'submitButtonText' => 'Update',
+                'development' => $development
+            ])
         </form>
     </div>
 </x-app-layout>

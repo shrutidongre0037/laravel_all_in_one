@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -75,6 +75,7 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
 
     //marketing resource
     Route::resource('marketings', MarketingController::class);
+    Route::get('/get-marketing-data', [MarketingController::class, 'getMarketing'])->name('marketing.data');
     Route::patch('marketings/{id}/restore', [MarketingController::class, 'restore'])->name('marketings.restore');
     Route::delete('marketings/{id}/force-delete', [MarketingController::class, 'forceDeleted'])->name('marketings.forceDeleted');
 

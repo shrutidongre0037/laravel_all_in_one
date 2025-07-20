@@ -6,23 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\str;
 use App\Models\User;
+use App\Traits\ModelEventLogger;
+
 
 class Tenant extends Model
 {
-    use HasFactory;
+    use HasFactory,ModelEventLogger;
 
     protected $fillable = ['name','database'];
     public $incrementing=false;
     public $keyType="string";
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->id = (string) Str::uuid(); 
-        });
-    }
+   
 
     public function getRouteKeyName()
     {

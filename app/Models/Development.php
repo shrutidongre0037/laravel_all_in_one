@@ -6,14 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use App\Traits\ModelEventLogger;
 
 
 class Development extends Model
 {
     
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes , ModelEventLogger;
     protected $connection = 'tenant';
     protected $dates = ['deleted_at'];
     protected $fillable = ['name', 'email', 'phone', 'address', 'image','department_id'];
@@ -21,46 +20,7 @@ class Development extends Model
     protected $keyType = 'string';
 
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->id = (string) Str::uuid(); 
-        });
-
-        static::saved(function ($model) {
-            Log::warning('Development saved: ' . $model->name);
-        });
-
-        static::deleting(function ($model) {
-            Log::warning('Development deleting: ' . $model->id);
-        });
-        static::updated(function ($model) {
-            Log::info('Development updated: ' . $model->name);
-        });
-
-        static::creating(function ($model) {
-        Log::info('Development creating: ' . $model->name);
-        });
-
-        static::created(function ($model) {
-        Log::info('Development created: ' . $model->name);
-        });
     
-        static::updating(function ($model) {
-            Log::info('Development updating: ' . $model->name);
-        });
-    
-        static::deleted(function ($model) {
-            Log::warning('Development deleted: ' . $model->id);
-        });
-
-        static::saving(function ($model) {
-            Log::warning('Development saving: ' . $model->name);
-        });
-    }
-
     public function getRouteKeyName()
     {
         return 'id'; // This is default, but explicitly setting it is good practice for UUIDs

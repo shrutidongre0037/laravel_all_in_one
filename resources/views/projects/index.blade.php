@@ -1,5 +1,9 @@
 <x-app-layout>
-    <div class="container mx-auto py-10">
+<div class="max-w-6xl mx-auto mt-10">
+    <h2 class="text-xl font-bold mb-6 text-center">Project Department List</h2>
+</div>
+
+    <div class="container mx-auto py-10">    
 
              <div class="text-left mb-4">
             <a href="{{ route('projects.create') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Add Project</a>

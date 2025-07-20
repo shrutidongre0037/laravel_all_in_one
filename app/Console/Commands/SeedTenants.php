@@ -47,7 +47,7 @@ class SeedTenants extends Command
 
             Artisan::call('migrate', [
                 '--database' => 'tenant',
-                '--path' => '/database/migrations',
+                '--path' => '/database/migrations/tenant',
                 '--force' => true,
             ]);
 

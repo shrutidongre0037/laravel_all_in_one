@@ -29,54 +29,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php $cnt = 1; @endphp
-                    @foreach ($marketing as $mar)
-                        <tr class="text-center border-b hover:bg-gray-100">
-                            <td class="p-3">{{ $cnt++ }}</td>
-                            <td class="p-3">{{ $mar->name }}</td>
-                            <td class="p-3">{{ $mar->email }}</td>
-                            <td class="p-3">{{ $mar->phone }}</td>
-                            <td class="p-3">{{ $mar->address }}</td>
-                            <td class="p-3">
-                                <img src="{{ asset('storage/' . $mar->image) }}" width="60" class="mx-auto rounded">
-                            </td>
-                            <td class="p-3">
-                                <a class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                                   href="{{ route('marketings.edit', $mar->id) }}">Edit</a>
-                            </td>
-                            <td class="p-3">
-                                <form method="POST" action="{{ route('marketings.destroy', $mar->id) }}"
-                                      onsubmit="return confirm('Delete this employee?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
-                            <th>
-                                <a href="{{ route('marketings.show', $mar->id) }}"
-                                        class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
-                                        View
-                                </a>
-                            </th>
-                        </tr>
-                    @endforeach
+                   
                 </tbody>
             </table>
         </div>
     </div>
-    @push('scripts')
-    {{-- DataTables CDN --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $('#myTable').DataTable();
-        });
-    </script>
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+$(function () {
+    $('#myTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('marketing.data') }}",
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'name', name: 'name' },
+            { data: 'email', name: 'email' },
+            { data: 'phone', name: 'phone' },
+            { data: 'address', name: 'address' },
+            { data: 'image', name: 'image', orderable: false, searchable: false },
+            { data: 'edit', name: 'edit', orderable: false, searchable: false },
+            { data: 'delete', name: 'delete', orderable: false, searchable: false },
+            { data: 'view', name: 'view', orderable: false, searchable: false },
+        ]
+    });
+});
+</script>
 @endpush
 </x-app-layout>

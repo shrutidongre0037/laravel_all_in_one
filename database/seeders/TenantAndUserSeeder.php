@@ -62,6 +62,19 @@ class TenantAndUserSeeder extends Seeder
             'role' => 'hr',
         ]);
 
+        $tenantD = Tenant::create([
+            'name' => 'Company C',
+            'database' => 'db_rest_company3',
+        ]);
+
+        User::create([
+            'name' => 'Admin C',
+            'email' => 'admin@companyc.com',
+            'password' => Hash::make('adminCC1'),
+            'tenant_id' => $tenantD->id,
+            'role' => 'admin',
+        ]);
+
          
     }
 }

@@ -3,7 +3,10 @@
         <h2 class="text-xl font-bold mb-4">Add Employee</h2>
         <form method="POST" action="{{ route('developments.store') }}" enctype="multipart/form-data">
             @csrf
-            @include('developments.form', ['submitButtonText' => 'Create'])
+             @include('developments.form', [
+                'submitButtonText' => 'Create',
+                'development' => null
+            ])
         </form>
     </div>
     @if ($errors->any())

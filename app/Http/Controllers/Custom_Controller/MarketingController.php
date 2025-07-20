@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreMarketingRequest;
 use App\Traits\ImageUploadTrait;
+use Yajra\DataTables\Facades\DataTables;
 
 
 class MarketingController extends Controller
@@ -19,10 +20,10 @@ class MarketingController extends Controller
         $this->middleware('auth');
 
         $this->middleware(function ($request, $next) {
-            if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'hr' && Auth::user()->role !== 'marketing') {
-                abort(403, 'Unauthorized');
-            }
-            return $next($request);
+                if (!has_role('admin', 'hr', 'marketing')) {
+                     abort(403, 'Unauthorized');
+                }
+                return $next($request);
         });
     }
 
@@ -76,24 +77,28 @@ class MarketingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Marketing $marketing)
+    public function show($id)
     {
+        $marketing = Marketing::findOrFail($id);
+
         return view('marketings.show', compact('marketing'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Marketing $marketing)
+    public function edit($id)
     {
+        $marketing = Marketing::findOrFail($id);
         return view('marketings.edit', compact('marketing'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreMarketingRequest $request, Marketing $marketing)
+    public function update(StoreMarketingRequest $request,$id)
     {
+        $marketing = Marketing::findOrFail($id);
         $data = $request->validated();
 
         if ($request->hasFile('image')) {
@@ -131,4 +136,38 @@ class MarketingController extends Controller
         $marketing->forceDelete();
         return redirect()->route('marketings.index');
     }
+
+    public function getMarketing(Request $request)
+{
+    if ($request->ajax()) {
+        $marketing = Marketing::select(['id', 'name', 'email', 'phone', 'address', 'image'])
+            ->orderBy('updated_at', 'desc');
+
+        return DataTables::of($marketing)
+            ->addIndexColumn()
+            ->addColumn('image', function ($row) {
+                $src = asset('storage/' . $row->image); 
+                return '<img src="' . $src . '" width="60" height="60">';
+            })
+            ->addColumn('edit', function ($row) {
+                return '<a href="' . route('marketings.edit', $row->id) . '" class="btn btn-sm btn-primary">Edit</a>';
+            })
+            ->addColumn('delete', function ($row) {
+                return '
+                    <form method="POST" action="' . route('marketings.destroy', $row->id) . '" style="display:inline;" onsubmit="return confirm(\'Are you sure?\')">
+                        ' . csrf_field() . '
+                        ' . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                ';
+            })
+            ->addColumn('view', function ($row) {
+                return '<a href="' . route('marketings.show', $row->id) . '" class="btn btn-sm btn-warning">View</a>';
+            })
+            ->rawColumns(['image', 'edit', 'delete', 'view'])
+            ->make(true);
+    }
+
+    return view('marketing.index');
+}
 }

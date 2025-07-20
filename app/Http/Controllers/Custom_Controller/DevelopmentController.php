@@ -54,7 +54,7 @@ class DevelopmentController extends Controller
         $departments = Department::all(); 
         $projects = Project::all();
 
-        return view('developments.create',compact('departments','projects'));
+        return view('developments.create',compact('departments','projects',));
     }
 
     /**
@@ -155,16 +155,15 @@ class DevelopmentController extends Controller
         return redirect()->route('developments.index');
     }
 
-     public function getDevelopment(Request $request)
+    public function getDevelopment(Request $request)
     {
-        if ($request->ajax()) {
-            $development = Development::with(['department', 'projects'])->select([
-    'id', 'name', 'email', 'phone', 'address', 'image', 'department_id'
-]);
+       $development = Development::with(['department', 'projects'])
+            ->select(['id', 'name', 'email', 'phone', 'address', 'image', 'department_id', 'updated_at'])
+            ->orderBy('updated_at', 'desc');
         return DataTables::of($development)
-        ->addColumn('projects', function ($row) {
-    return $row->projects->pluck('title')->implode('<br>');
-})
+            ->addColumn('projects', function ($row) {
+                return $row->projects->pluck('title')->implode('<br>');
+            })
             ->addIndexColumn()
             ->addColumn('department', function($row) {
                 return $row->department ? $row->department->name : 'N/A';
@@ -194,4 +193,3 @@ class DevelopmentController extends Controller
         }
 
     }
-}

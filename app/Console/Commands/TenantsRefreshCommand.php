@@ -29,24 +29,34 @@ class TenantsRefreshCommand extends Command
      */
     public function handle()
     {
+        // Ensure main database has tenants table
+        $this->info("Migrating central database...");
+        Artisan::call('migrate', ['--database' => 'mysql', '--force' => true]);
+
         $tenants = Tenant::all();
 
         foreach ($tenants as $tenant) {
-            $this->info("Migrating for tenant: {$tenant->name}");
+            $this->info("Refreshing : {$tenant->name}");
 
             // Set tenant DB dynamically
-            Config::set('database.connections.mysql.database', $tenant->database);
-            DB::purge('mysql'); // Clears existing connection
-            DB::reconnect('mysql');
+            Config::set('database.connections.tenant.database', $tenant->database);
+            DB::purge('tenant'); // Clears existing connection
+            DB::reconnect('tenant');
+            DB::setDefaultConnection('tenant');
 
             try {
                 Artisan::call('migrate:fresh', [
-                    '--database' => 'mysql',
-                    '--path' => 'database/migrations', // Make sure you use this folder
+                    '--database' => 'tenant',
+                    '--path' => 'database/migrations/tenant', // Make sure you use this folder
                     '--force' => true,
                 ]);
+                Artisan::call('db:seed', [
+                '--class' => \Database\Seeders\Tenant\TenantDatabaseSeeder::class,
+                '--database' => 'tenant',
+                '--force' => true,
+            ]);
 
-                $this->info("✅ Migrated: {$tenant->name}");
+                $this->info("✅ Refreshed: {$tenant->name}");
             } catch (\Exception $e) {
                 $this->error("❌ Failed for {$tenant->name}: {$e->getMessage()}");
             }

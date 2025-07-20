@@ -43,5 +43,17 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+       
+         
     </form>
+    <div class="flex items-left justify-start mt-4">
+        <h1 class=" text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
+                    {{ __('New User ?') }}
+        </h1> 
+    </div>
+    <div class="flex items-left justify-start mt-1">
+        <a class=" text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('register') }}">
+                    {{ __('Click here to Register') }}
+        </a>
+    </div>
 </x-guest-layout>

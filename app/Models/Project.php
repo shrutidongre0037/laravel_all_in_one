@@ -5,27 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
+use App\Traits\ModelEventLogger;
 
 
 class Project extends Model
 {
     use HasFactory;
 
-    use SoftDeletes;
+    use SoftDeletes,ModelEventLogger;
 
     protected $connection = 'tenant';
     public $incrementing = false;
     protected $keyType = 'string';
     protected $fillable = ['title', 'description', 'start_date', 'end_date'];
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = Str::uuid();
-        });
-    }
+   
 
     public function getRouteKeyName()
     {

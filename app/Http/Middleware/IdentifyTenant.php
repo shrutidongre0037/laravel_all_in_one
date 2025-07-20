@@ -33,7 +33,9 @@ class IdentifyTenant
             DB::purge('tenant');
             DB::reconnect('tenant');
             DB::setDefaultConnection('tenant');
-            Log::info('Switched to tenant DB: ' . $tenant->database);
+            if (app()->environment('local', 'testing')) {
+                 Log::info('Switched to tenant DB: ' . $tenant->database);
+            }
 
         }
         return $next($request);

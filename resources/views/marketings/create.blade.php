@@ -3,7 +3,10 @@
         <h2 class="text-xl font-bold mb-4">Add Employee</h2>
         <form method="POST" action="{{ route('marketings.store') }}" enctype="multipart/form-data">
             @csrf
-            @include('marketings.form', ['submitButtonText' => 'Create'])
+            @include('marketings.form', [
+                'submitButtonText' => 'Create',
+                'marketing' => null
+            ])
 
         </form>
     </div>

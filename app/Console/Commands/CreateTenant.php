@@ -45,7 +45,12 @@ class CreateTenant extends Command
         Config::set('database.connections.tenant.database', $dbName);
         DB::purge('tenant');
         DB::reconnect('tenant');
-        Artisan::call('migrate', ['--force' => true]);
+        // Artisan::call('migrate', ['--force' => true]);
+        Artisan::call('migrate', [
+            '--database' => 'tenant',
+            '--path' => '/database/migrations/tenant',
+            '--force' => true,
+        ]);
         $this->info("Tenant created successfully with database: $dbName");
     }
 }

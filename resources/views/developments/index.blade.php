@@ -13,7 +13,7 @@
 
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="">
             <table id="myTable" class="display table-auto w-full bg-white shadow-md rounded-lg text-sm">
                 <thead class="bg-gray-200 text-gray-700">
                     <tr class="text-center">

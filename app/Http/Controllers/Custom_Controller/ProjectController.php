@@ -24,7 +24,8 @@ class ProjectController extends Controller
         else
         {
          if ($request->ajax()) {
-            $data = Project::query();
+            $data = Project::query()
+            ->orderBy('updated_at', 'desc');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('edit', function($row) {

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreProjectRequest;
+use App\Events\ModuleCreated;
 
 class ProjectController extends Controller
 {
@@ -61,7 +62,10 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        Project::create($request->validated());
+        $project=Project::create($request->validated());
+
+        event(new ModuleCreated($project, 'project'));
+
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
 

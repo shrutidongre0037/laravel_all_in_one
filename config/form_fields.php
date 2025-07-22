@@ -1,7 +1,14 @@
 <?php
 
 return [
-
+    'department' =>[
+        [
+            'type' => 'text',
+            'name' =>'name',
+            'placeholder' => 'Department name',
+            'required' => true,
+        ],
+    ],
     'development' => [
         [
             'type' => 'text',

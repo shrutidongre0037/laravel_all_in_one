@@ -5,8 +5,10 @@
         <form method="POST" action="{{ route('departments.update', $department->id) }}">
             @csrf
             @method('PUT')
-            @include('departments.form', ['submitButtonText' => 'Update'])
-
+             @include('departments.form', [
+                'submitButtonText' => 'Update',
+                'department' => $department
+            ])
         </form>
     </div>
 </x-app-layout>

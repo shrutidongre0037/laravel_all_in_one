@@ -57,16 +57,19 @@ class DepartmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Department $department)
+    public function edit($id)
     {
+        $department = Department::findOrFail($id);
         return view('departments.edit', compact('department'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreDepartmentRequest $request, Department $department)
+    public function update(StoreDepartmentRequest $request,$id)
     {
+        $department = Department::findOrFail($id);
+
         $data = $request->validated();
 
         $department->fill($data); 

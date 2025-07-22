@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreMarketingRequest;
 use App\Traits\ImageUploadTrait;
 use Yajra\DataTables\Facades\DataTables;
+use App\Events\ModuleCreated;
 
 
 class MarketingController extends Controller
@@ -69,8 +70,8 @@ class MarketingController extends Controller
 
         }
 
-        Marketing::create($data);
-
+        $marketing = Marketing::create($data);
+        event(new ModuleCreated($marketing, 'Marketing'));
         return redirect()->route('marketings.index')->with('success', 'Data created successfully.');
     }
 

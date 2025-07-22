@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\DevelopmentCreated::class => [
         \App\Listeners\NotifyDevelopmentCreated::class,
         ],
+         \App\Events\ModuleCreated::class => [
+        \App\Listeners\NotifyModuleCreated::class,
+    ],
     ];
 
     /**

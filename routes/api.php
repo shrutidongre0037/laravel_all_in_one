@@ -23,7 +23,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum','identify.tenant')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+     Route::apiResource('developments', DevelopmentApiController::class);
+    Route::patch('developments/{id}/restore', [DevelopmentApiController::class, 'restore']);
+    Route::delete('developments/{id}/force-delete', [DevelopmentApiController::class, 'forceDeleted']);
 });

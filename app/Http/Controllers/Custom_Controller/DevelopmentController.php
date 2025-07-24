@@ -12,36 +12,39 @@ use App\Traits\ImageUploadTrait;
 use App\Events\DevelopmentCreated;
 use App\Models\Department;
 use App\Models\Project;
+use Barryvdh\Debugbar\Facades\Debugbar;
+use App\Repositories\Interfaces\DevelopmentRepositoryInterface;
 
 class DevelopmentController extends Controller
 {
-    
-    public function __construct()
+    protected $developmentRepo;
+
+    public function __construct(DevelopmentRepositoryInterface $developmentRepo)
     {
         $this->middleware('auth');
+        $this->developmentRepo = $developmentRepo;
 
         $this->middleware(function ($request, $next) {
-                if (!has_role('admin', 'hr', 'development')) {
-                     abort(403, 'Unauthorized');
-                }
-                return $next($request);
+            if (!has_role('admin', 'hr', 'development')) {
+                abort(403, 'Unauthorized');
+            }
+            return $next($request);
         });
     }
 
     /**
      * Display a listing of the resource.
      */
-     public function index(Request $request)
+    public function index(Request $request)
     {
-        if($request->deleted == 1)
-        {
+        if ($request->deleted == 1) {
             $development = Development::onlyTrashed()->get();
             return view('developments.restored', compact('development'));
-
-        }
-        else
-        {
-            $development = Development::all();
+        } 
+        else {
+            $development = $this->developmentRepo->all();
+            Debugbar::addMessage('Debugbar is working!');
+            Debugbar::info(['deveopment' => auth()->user()]);
             return view('developments.index', compact('development'));
         }
     }
@@ -51,10 +54,9 @@ class DevelopmentController extends Controller
      */
     public function create()
     {
-        $departments = Department::all(); 
+        $departments = Department::all();
         $projects = Project::all();
-
-        return view('developments.create',compact('departments','projects',));
+        return view('developments.create', compact('departments', 'projects',));
     }
 
     /**
@@ -65,18 +67,13 @@ class DevelopmentController extends Controller
     {
         $data = $request->validated();
 
-         if ($request->hasFile('image')) {
-            $data['image'] = $this->uploadImage($request->file('image'),'developments');     
+        if ($request->hasFile('image')) {
+            $data['image'] = $this->uploadImage($request->file('image'), 'developments');
         }
-        $development = Development::create($data);
-            // dump($request->all());
-            //dd($data);
-            //ddd($data);
-
-        if ($request->has('project_ids')) 
-        {
-            $development->projects()->sync($request->project_ids);
-        }
+        $development = $this->developmentRepo->create($data);
+        // dump($request->all());
+        //dd($data);
+        //ddd($data);
 
         event(new DevelopmentCreated($development));
 
@@ -87,8 +84,7 @@ class DevelopmentController extends Controller
      */
     public function show($id)
     {
-        $development = Development::findOrFail($id);
-        $development->load(['department', 'projects']);
+        $development = $this->developmentRepo->find($id);
         return view('developments.show', compact('development'));
     }
 
@@ -97,11 +93,10 @@ class DevelopmentController extends Controller
      */
     public function edit($id)
     {
-        $development = Development::findOrFail($id);
-
-        $departments = Department::all(); // <-- this is missing
-        $projects = Project::all(); 
-        return view('developments.edit', compact('development','departments','projects'));
+        $development = $this->developmentRepo->find($id);
+        $departments = Department::all(); 
+        $projects = Project::all();
+        return view('developments.edit', compact('development', 'departments', 'projects'));
     }
 
     /**
@@ -109,20 +104,16 @@ class DevelopmentController extends Controller
      */
     public function update(StoreDevelopmentRequest $request, $id)
     {
-        $development = Development::findOrFail($id);
+        $development = $this->developmentRepo->find($id);
         $data = $request->validated();
         if ($request->hasFile('image')) {
             $this->deleteImage($development->image);
             $data['image'] = $this->uploadImage($request->file('image'), 'developments');
         }
 
-        // Fill validated data
         $development->fill($data);
-
-        // Save updated fields
         $development->save();
 
-        // Sync project_ids if present
         if ($request->has('project_ids')) {
             $development->projects()->sync($request->project_ids);
         }
@@ -135,29 +126,25 @@ class DevelopmentController extends Controller
      */
     public function destroy(string $id)
     {
-        $development = Development::findOrFail($id);
-        $development->delete();
-
+        $this->developmentRepo->delete($id);
         return redirect()->route('developments.index')->with('success', 'data deleted successfully.');
     }
 
     public function restore($id)
     {
-        $development=Development::onlyTrashed()->find($id)->restore();
+        $this->developmentRepo->restore($id);
         return redirect()->route('developments.index');
-
     }
 
     public function forceDeleted($id)
     {
-        $development=Development::withTrashed()->find($id);
-        $development->forceDelete();
+        $this->developmentRepo->forceDelete($id);
         return redirect()->route('developments.index');
     }
 
     public function getDevelopment(Request $request)
     {
-       $development = Development::with(['department', 'projects'])
+        $development = Development::with(['department', 'projects'])
             ->select(['id', 'name', 'email', 'phone', 'address', 'image', 'department_id', 'updated_at'])
             ->orderBy('updated_at', 'desc');
         return DataTables::of($development)
@@ -165,18 +152,18 @@ class DevelopmentController extends Controller
                 return $row->projects->pluck('title')->implode('<br>');
             })
             ->addIndexColumn()
-            ->addColumn('department', function($row) {
+            ->addColumn('department', function ($row) {
                 return $row->department ? $row->department->name : 'N/A';
             })
             ->addIndexColumn()
-                ->addColumn('image', function($row) {
-                    $src = asset('storage/' . $row->image); // from accessor
-                    return '<img src="' . $src . '" width="60" height="90">';
-                })
-                ->addColumn('edit', function($row) {
-                    return '<a href="' . route('developments.edit', $row->id) . '" class="btn   btn-primary">Edit</a>';
-                })
-                ->addColumn('delete', function($row) {
+            ->addColumn('image', function ($row) {
+                $src = asset('storage/' . $row->image); // from accessor
+                return '<img src="' . $src . '" width="60" height="90">';
+            })
+            ->addColumn('edit', function ($row) {
+                return '<a href="' . route('developments.edit', $row->id) . '" class="btn   btn-primary">Edit</a>';
+            })
+            ->addColumn('delete', function ($row) {
                 return '
                     <form method="POST" action="' . route('developments.destroy', $row->id) . '" style="display:inline;" onsubmit="return confirm(\'Are you sure?\')">
                         ' . csrf_field() . '
@@ -184,12 +171,37 @@ class DevelopmentController extends Controller
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 ';
+            })
+            ->addColumn('view', function ($row) {
+                return '<a href="' . route('developments.show', $row->id) . '" class="btn   btn-warning">View</a>';
+            })
+            ->rawColumns(['image', 'edit', 'delete', 'view'])
+            ->make(true);
+    }
+
+    public function trashedData(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Development::onlyTrashed()->with(['department', 'projects']);
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('department', fn($row) => $row->department->name ?? 'N/A')
+                ->addColumn('projects', fn($row) => $row->projects->pluck('title')->implode(', '))
+                ->addColumn('image', fn($row) => '<img src="' . asset('storage/' . $row->image) . '" width="60" class="rounded mx-auto">')
+                ->addColumn('restore', function ($row) {
+                    return '<form action="' . route('developments.restore', $row->id) . '" method="POST" onsubmit="return confirm(\'Restore this record?\')">'
+                        . csrf_field() . method_field('PATCH') .
+                        '<button class="btn btn-success btn-sm">Restore</button></form>';
                 })
-                ->addColumn('view', function($row) {
-                    return '<a href="' . route('developments.show', $row->id) . '" class="btn   btn-warning">View</a>';
+
+                ->addColumn('forceDelete', function ($row) {
+                    return '<form action="' . route('developments.forceDeleted', $row->id) . '" method="POST" onsubmit="return confirm(\'Permanently delete this record?\')">'
+                        . csrf_field() . method_field('DELETE') .
+                        '<button class="btn btn-danger btn-sm">Delete</button></form>';
                 })
-                ->rawColumns(['image', 'edit', 'delete', 'view'])
+                ->rawColumns(['image', 'restore', 'forceDelete'])
                 ->make(true);
         }
-
     }
+}

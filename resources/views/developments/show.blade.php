@@ -27,7 +27,7 @@
     @if($development->projects->isNotEmpty())
         <ul class="list-disc list-inside text-center">
             @foreach($development->projects as $project)
-                <li>{{ $project->title }}</li>
+                <a href="{{ route('projects.show', ['project' => $project->id])}}?from=development&employee_id={{ $development->id }}" target="_self"><li>{{ $project->title }}</a></li>
             @endforeach
         </ul>
     @else

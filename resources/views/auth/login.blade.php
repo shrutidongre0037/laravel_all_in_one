@@ -1,4 +1,19 @@
 <x-guest-layout>
+    @if ($errors->any())
+    <div class="bg-red-100 text-red-800 px-4 py-2 rounded mb-4 text-center">
+        <ul class="list-disc list-inside">
+            @foreach ($errors->all() as $error)
+                <li class="text-sm">{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+     @if(session('error'))
+            <div class="bg-red-100 text-red-800 px-4 py-2 rounded mb-4 text-center max-w-4xl mx-auto mt-4">
+                {{ session('error') }}
+            </div>
+        @endif
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 

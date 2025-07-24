@@ -5,6 +5,7 @@ use App\Http\Controllers\Custom_Controller\DepartmentController;
 use App\Http\Controllers\Custom_Controller\DevelopmentController;
 use App\Http\Controllers\Custom_Controller\MarketingController;
 use App\Http\Controllers\Custom_Controller\ProjectController;
+use App\Models\Department;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +19,14 @@ use Illuminate\Support\Facades\Auth;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+use Barryvdh\Debugbar\Facades\Debugbar;
+
+Route::get('/debugbar-test', function () {
+    Debugbar::addMessage('Hello from route');
+    Debugbar::info(['test' => true]);
+
+    return view('welcome'); // Use the default Blade view
+});
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -64,9 +73,14 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
     })->name('dashboard');
 
     //department resource
-    Route::resource('departments', DepartmentController::class);
+    Route::resource('departments', DepartmentController::class)->except(['show']);
+    Route::get('departments/trashed-data', [DepartmentController::class, 'trashedData'])->name('departments.trashed.data');
+    Route::patch('departments/{id}/restore', [DepartmentController::class, 'restore'])->name('departments.restore');
+    Route::delete('departments/{id}/force-delete', [DepartmentController::class, 'forceDeleted'])->name('departments.forceDeleted');
 
     //development resource
+    Route::get('/developments/trashed-data', [DevelopmentController::class, 'trashedData'])->name('developments.trashed.data');
+
     Route::resource('developments', DevelopmentController::class);
     Route::get('/developments/data', [DevelopmentController::class, 'getDevelopment'])->name('developments.data');
     Route::patch('developments/{id}/restore', [DevelopmentController::class, 'restore'])->name('developments.restore');
@@ -74,12 +88,14 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
 
 
     //marketing resource
+    Route::get('marketing/trashed-data', [MarketingController::class, 'trashedData'])->name('marketing.trashed.data');
     Route::resource('marketings', MarketingController::class);
     Route::get('/get-marketing-data', [MarketingController::class, 'getMarketing'])->name('marketing.data');
     Route::patch('marketings/{id}/restore', [MarketingController::class, 'restore'])->name('marketings.restore');
     Route::delete('marketings/{id}/force-delete', [MarketingController::class, 'forceDeleted'])->name('marketings.forceDeleted');
 
     //projects resources
+    Route::get('projects/trashed-data', [ProjectController::class, 'trashedData'])->name('projects.trashed.data');
     Route::get('/projects-data', [ProjectController::class, 'getProject'])->name('projects.data');
     Route::resource('projects', ProjectController::class);
     Route::patch('projects/{id}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
@@ -89,6 +105,9 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
     
 });
 
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+});
 
 Route::middleware('auth')->group(function () {
     Route::resource('developments', DevelopmentController::class);

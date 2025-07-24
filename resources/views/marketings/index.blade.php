@@ -2,7 +2,7 @@
     <div class="max-w-6xl mx-auto mt-10">
          @auth
         @if(Auth::user()->role !== 'marketing')
-            <h2 class="text-xl font-bold mb-6 text-center">Marketing Department List</h2>
+            <h1 class="text-xl font-bold mb-6 text-center">Marketing Department List</h1>
         @endif
         @endauth
 

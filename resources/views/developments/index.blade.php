@@ -1,6 +1,5 @@
 <x-app-layout>
-    @vite(['resources/css/app.css', 'resources/css/style.css']) 
-    <div class="max-w-6xl mx-auto mt-10">
+    <div class="max-w-6xl mx-auto mt-10"  id="phpdebugbar">
         @auth
         @if(Auth::user()->role !== 'development')
             <h1 class="text-xl font-bold mb-6 text-center">Development Department List</h1>
@@ -36,12 +35,12 @@
             </table>
         </div>
     </div>
-    @push('scripts')
+    @vite(['resources/css/app.css', 'resources/css/style.css','resources/js/table-data.css']) 
+ @push('scripts')
 <!-- jQuery + DataTables -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
 <script>
     $(document).ready(function () {
         $('#myTable').DataTable({

@@ -2,7 +2,7 @@
 
 
     <div class="py-12 text-center">
-        <h2 class="text-2xl font-bold">Welcome {{Auth::user()->name}}</h2>
+        <h1 class="text-2xl font-bold">Welcome {{Auth::user()->name}}</h1>
         
     </div>
 

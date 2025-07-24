@@ -8,12 +8,6 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Address</th>
-                        <th>Department</th>
-                        <th>Projects</th>
-                        <th>Image</th>
                         <th>Deleted At</th>
                         <th>Restore</th>
                         <th>Delete</th>
@@ -22,7 +16,7 @@
             </table>
         </div>
 
-        <a href="{{ route('developments.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded mt-4 inline-block">← Back</a>
+        <a href="{{ route('departments.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded mt-4 inline-block">← Back</a>
     </div>
 
     @push('scripts')
@@ -35,16 +29,10 @@
                 $('#trashedTable').DataTable({
                     processing: true,
                     serverSide: true,
-                    ajax: '{{ route('developments.trashed.data') }}',
+                    ajax: '{{ route('departments.trashed.data') }}',
                     columns: [
                         { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false }, // <--- fix here
                         { data: 'name', name: 'name' },
-                        { data: 'email', name: 'email' },
-                        { data: 'phone', name: 'phone' },
-                        { data: 'address', name: 'address' },
-                        { data: 'department', name: 'department' },
-                        { data: 'projects', name: 'projects' },
-                        { data: 'image', name: 'image', orderable: false, searchable: false },
                         { data: 'deleted_at', name: 'deleted_at' },
                         { data: 'restore', name: 'restore', orderable: false, searchable: false },
                         { data: 'forceDelete', name: 'forceDelete', orderable: false, searchable: false }

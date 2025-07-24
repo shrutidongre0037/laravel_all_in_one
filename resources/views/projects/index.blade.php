@@ -1,6 +1,6 @@
 <x-app-layout>
 <div class="max-w-6xl mx-auto mt-10">
-    <h2 class="text-xl font-bold mb-6 text-center">Project Department List</h2>
+    <h1 class="text-xl font-bold mb-6 text-center">Project Department List</h1>
 </div>
 
     <div class="container mx-auto py-10">    
@@ -35,7 +35,7 @@
             $('#table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('projects.index') }}",
+                ajax: "{{ route('projects.data') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                     { data: 'title', name: 'title' },

@@ -5,26 +5,42 @@ namespace App\Http\Controllers\Custom_Controller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Department;
+use App\Events\ModuleCreated;
 use App\Http\Requests\StoreDepartmentRequest;
+use Yajra\DataTables\Facades\DataTables;
+use App\Repositories\Interfaces\DepartmentRepositoryInterface;
 
 class DepartmentController extends Controller
 {
-    public function __construct()
+    protected $departmentRepo;
+
+    public function __construct(DepartmentRepositoryInterface $departmentRepo)
     {
-        $this->middleware(function ($request, $next) {
-            if (auth()->user()->role !== 'admin') {
-                abort(403, 'Unauthorized');
-            }
-            return $next($request);
+        $this->middleware('auth');
+        $this->departmentRepo=$departmentRepo;
+
+         $this->middleware(function ($request, $next) {
+                if (!has_role('admin')) {
+                     abort(403, 'Unauthorized');
+                }
+                return $next($request);
         });
     }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $departments = Department::all();
-        return view('departments.index', compact('departments'));
+         if($request->deleted == 1)
+        {
+            $department = Department::onlyTrashed()->get();
+            return view('departments.restored', compact('department'));
+        }
+        else
+        {
+            $departments = $this->departmentRepo->all();
+            return view('departments.index', compact('departments'));
+        }
     }
 
     /**
@@ -41,7 +57,9 @@ class DepartmentController extends Controller
     public function store(StoreDepartmentRequest $request)
     {
         $data = $request->validated();
-        Department::create($data);
+        $department=$this->departmentRepo->create($data);
+        event(new ModuleCreated($department, 'department'));
+
 
         return redirect()->route('departments.index')->with('success', 'Department added.');
     }
@@ -59,7 +77,7 @@ class DepartmentController extends Controller
      */
     public function edit($id)
     {
-        $department = Department::findOrFail($id);
+        $department = $this->departmentRepo->find($id);
         return view('departments.edit', compact('department'));
     }
 
@@ -68,7 +86,7 @@ class DepartmentController extends Controller
      */
     public function update(StoreDepartmentRequest $request,$id)
     {
-        $department = Department::findOrFail($id);
+        $department = $this->departmentRepo->find($id);
 
         $data = $request->validated();
 
@@ -83,9 +101,45 @@ class DepartmentController extends Controller
      */
     public function destroy(string $id)
     {
-        $department = Department::findOrFail($id);
-        $department->delete();
+        $this->departmentRepo->delete($id);
 
         return redirect()->route('departments.index')->with('success', 'Department deleted successfully.');
+    }
+
+     public function restore($id)
+    {
+        $this->departmentRepo->restore($id);
+        return redirect()->route('departments.index');
+
+    }
+
+    public function forceDeleted($id)
+    {
+        $this->departmentRepo->forceDelete($id);
+        return redirect()->route('departments.index');
+    }
+
+    public function trashedData(Request $request)
+    {
+        $data = Department::onlyTrashed()->select(['id', 'name','deleted_at']);
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('restore', function ($row) {
+                $url = route('departments.restore', $row->id);
+                return '<form method="POST" action="' . $url . '">' .
+                    csrf_field() .
+                    method_field('PATCH') .
+                    '<button class="btn btn-success btn-sm">Restore</button></form>';
+            })
+            ->addColumn('forceDelete', function ($row) {
+                $url = route('departments.forceDeleted', $row->id);
+                return '<form method="POST" action="' . $url . '">' .
+                    csrf_field() .
+                    method_field('DELETE') .
+                    '<button class="btn btn-danger btn-sm">ForceDelete</button></form>';
+            })
+            ->rawColumns([ 'restore', 'forceDelete' ])
+            ->make(true);
     }
 }

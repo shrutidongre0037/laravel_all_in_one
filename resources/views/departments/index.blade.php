@@ -1,9 +1,10 @@
 <x-app-layout>
     <div class="max-w-6xl mx-auto mt-10">
-        <h2 class="text-xl font-bold mb-6 text-center">Department List</h2>
+        <h1 class="text-xl font-bold mb-6 text-center">Department List</h1>
 
         <div class="text-left mb-4">
             <a href="{{ route('departments.create') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Add Department</a>
+            <a class="px-4 py-2 bg-blue-500 text-white rounded" href="{{ route('departments.index',['deleted' => 1]) }}">Restore</a>
         </div>
 
         <div class="overflow-x-auto">

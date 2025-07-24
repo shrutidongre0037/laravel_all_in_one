@@ -5,10 +5,15 @@
             <p><strong>Title:</strong> {{ $project->title }}</p>
             <p><strong class="ml-36">Description:</strong> {{ $project->description }}</p>
             <p><strong>Start Date:</strong> {{ $project->start_date }}</p>
-            <p><strong>End Date:</strong> {{ $project->end_date }}</p>
-            <a href="{{ route('projects.index') }}" class="inline-block text-center mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
-            Back
-        </a>
+            <p class="mb-3"><strong>End Date:</strong> {{ $project->end_date }}</p>
+            @if(request()->get('from') === 'development' && request()->has('employee_id'))
+                <a href="{{ route('developments.show', request()->get('employee_id')) }}" class="bg-gray-700 text-white px-4 py-2 rounded">
+                    Back to Employee
+                </a>
+            @elseif(has_role('admin'))
+                <a href="{{ route('projects.index') }}" class="bg-gray-700 text-white px-4 py-2 rounded">Back to List</a>
+            @endif
+
         </div>
          
     </div>

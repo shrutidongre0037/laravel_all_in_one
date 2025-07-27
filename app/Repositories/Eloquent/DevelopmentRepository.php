@@ -4,6 +4,8 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Development;
 use App\Repositories\Interfaces\DevelopmentRepositoryInterface;
+use Illuminate\Support\Facades\Storage;
+
 
 class DevelopmentRepository implements DevelopmentRepositoryInterface
 {
@@ -31,13 +33,29 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
     public function update($id, array $data)
     {
         $development = Development::findOrFail($id);
-        $development->update($data);
 
-        if (isset($data['project_ids'])) {
-            $development->projects()->sync($data['project_ids']);
+        // Handle image if present
+        if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
+            // Delete old image
+            if ($development->image) {
+                Storage::delete('public/developments/' . $development->image);
+            }
+
+            // Upload new image
+            $data['image'] = $data['image']->store('developments', 'public');
         }
 
+        $development->fill($data)->save();
+        $this->syncProjects($development, $data);
+
         return $development;
+    }
+
+    private function syncProjects(Development $development, array $data): void
+    {
+        if (!empty($data['project_ids'])) {
+            $development->projects()->sync($data['project_ids']);
+        }
     }
 
     public function delete($id)

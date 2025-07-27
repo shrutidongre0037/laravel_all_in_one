@@ -40,8 +40,7 @@ class DevelopmentController extends Controller
         if ($request->deleted == 1) {
             $development = Development::onlyTrashed()->get();
             return view('developments.restored', compact('development'));
-        } 
-        else {
+        } else {
             $development = $this->developmentRepo->all();
             Debugbar::addMessage('Debugbar is working!');
             Debugbar::info(['deveopment' => auth()->user()]);
@@ -94,7 +93,7 @@ class DevelopmentController extends Controller
     public function edit($id)
     {
         $development = $this->developmentRepo->find($id);
-        $departments = Department::all(); 
+        $departments = Department::all();
         $projects = Project::all();
         return view('developments.edit', compact('development', 'departments', 'projects'));
     }
@@ -104,22 +103,14 @@ class DevelopmentController extends Controller
      */
     public function update(StoreDevelopmentRequest $request, $id)
     {
-        $development = $this->developmentRepo->find($id);
         $data = $request->validated();
         if ($request->hasFile('image')) {
-            $this->deleteImage($development->image);
-            $data['image'] = $this->uploadImage($request->file('image'), 'developments');
+            $data['image'] = $request->file('image');
         }
-
-        $development->fill($data);
-        $development->save();
-
-        if ($request->has('project_ids')) {
-            $development->projects()->sync($request->project_ids);
-        }
-        return redirect()->route('developments.index')->with('success', 'Data updated successfully.');
+        $this->developmentRepo->update($id, $data);
+        return redirect()->route('developments.index')
+            ->with('success', 'Data updated successfully.');
     }
-
 
     /**
      * Remove the specified resource from storage.

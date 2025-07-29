@@ -65,7 +65,6 @@ class StoreMarketingRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            // Disallow name if it's numbers-only
             if (is_numeric($this->name)) {
                 $validator->errors()->add('name', 'Name cannot be a number only.');
             }

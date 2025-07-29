@@ -52,8 +52,7 @@ class SeedTenants extends Command
             ]);
 
             app(\Faker\Generator::class)->unique(true);
-
-            // Seed all tenant data
+            
             Artisan::call('db:seed', [
                 '--class' => DepartmentSeeder::class,
                 '--database' => 'tenant',

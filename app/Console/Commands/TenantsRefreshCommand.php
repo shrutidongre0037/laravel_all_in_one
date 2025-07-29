@@ -47,7 +47,7 @@ class TenantsRefreshCommand extends Command
             try {
                 Artisan::call('migrate:fresh', [
                     '--database' => 'tenant',
-                    '--path' => 'database/migrations/tenant', // Make sure you use this folder
+                    '--path' => 'database/migrations/tenant', 
                     '--force' => true,
                 ]);
                 Artisan::call('db:seed', [

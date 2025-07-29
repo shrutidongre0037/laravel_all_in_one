@@ -60,12 +60,10 @@ class StoreProjectRequest extends FormRequest
      public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            // Example: Title cannot be numeric-only
             if (is_numeric($this->title)) {
                 $validator->errors()->add('title', 'Project title cannot be only numbers.');
             }
 
-            // Example: Prevent use of certain words in title
             $bannedWords = ['test', 'demo', 'dummy'];
             foreach ($bannedWords as $word) {
                 if (stripos($this->title, $word) !== false) {

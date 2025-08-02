@@ -5,6 +5,8 @@ use App\Http\Controllers\Custom_Controller\DepartmentController;
 use App\Http\Controllers\Custom_Controller\DevelopmentController;
 use App\Http\Controllers\Custom_Controller\MarketingController;
 use App\Http\Controllers\Custom_Controller\ProjectController;
+use App\Http\Controllers\Custom_Controller\MassUpdateController;
+use App\Http\Controllers\Custom_Controller\DevProfileController;
 use App\Models\Department;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +45,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::middleware(['auth', 'role:admin,hr'])->group(function () {
+Route::middleware(['auth', 'role:admin,hr', 'identify.tenant'])->group(function () {
     Route::get('/dashboard', function () {
          $user = Auth::user();
 
@@ -97,12 +99,18 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
     //projects resources
     Route::get('projects/trashed-data', [ProjectController::class, 'trashedData'])->name('projects.trashed.data');
     Route::get('/projects-data', [ProjectController::class, 'getProject'])->name('projects.data');
+    // routes/web.php
     Route::resource('projects', ProjectController::class);
     Route::patch('projects/{id}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
     Route::delete('projects/{id}/force-delete', [ProjectController::class, 'forceDeleted'])->name('projects.forceDeleted');
 
  
+    Route::post('/mass-update', [MassUpdateController::class, 'handle'])->name('mass.update');
     
+    Route::get('/profiles/create', [DevProfileController::class, 'create'])->name('profiles.create');
+Route::post('/profiles', [DevProfileController::class, 'store'])->name('profiles.store');
+Route::get('/profiles/{profile}/edit', [DevProfileController::class, 'edit'])->name('profiles.edit');
+Route::put('/profiles/{profile}', [DevProfileController::class, 'update'])->name('profiles.update');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

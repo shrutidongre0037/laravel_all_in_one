@@ -83,7 +83,9 @@ class DevelopmentController extends Controller
      */
     public function show($id)
     {
-        $development = $this->developmentRepo->find($id);
+        // $development = $this->developmentRepo->find($id);
+        // $development = Development::with('profile')->findOrFail($id);
+        $development = Development::with(['departments', 'projects', 'profileLink.profile'])->findOrFail($id);
         return view('developments.show', compact('development'));
     }
 
@@ -135,24 +137,23 @@ class DevelopmentController extends Controller
 
     public function getDevelopment(Request $request)
     {
-        $development = Development::with(['department', 'projects'])
-            ->select(['id', 'name', 'email', 'phone', 'address', 'image', 'department_id', 'updated_at'])
-            ->orderBy('updated_at', 'desc');
+        $development = Development::with([ 'projects', 'departments'])
+            ->select(['id', 'name', 'email', 'phone', 'address', 'image', 'updated_at'])
+            ->orderBy('updated_at', 'desc')->get();
         return DataTables::of($development)
             ->addColumn('projects', function ($row) {
-                return $row->projects->pluck('title')->implode('<br>');
+                return $row->projects->pluck('title')->implode(',');
             })
             ->addIndexColumn()
-            ->addColumn('department', function ($row) {
-                return $row->department ? $row->department->name : 'N/A';
-            })
+            ->addColumn('departments', fn($row) => $row->departments->pluck('name')->implode(', '))
             ->addIndexColumn()
+            ->addColumn('updated_at', fn($row) => $row->updated_at->toDateTimeString())
             ->addColumn('image', function ($row) {
-                $src = asset('storage/' . $row->image); // from accessor
+                $src = asset('storage/' . $row->image ?? 'default.png'); // from accessor
                 return '<img src="' . $src . '" width="60" height="90">';
             })
             ->addColumn('edit', function ($row) {
-                return '<a href="' . route('developments.edit', $row->id) . '" class="btn   btn-primary">Edit</a>';
+                return '<a href="' . route('developments.edit', $row->id) . '" class="btn btn-primary">Edit</a>';
             })
             ->addColumn('delete', function ($row) {
                 return '

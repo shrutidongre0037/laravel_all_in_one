@@ -11,6 +11,8 @@
                         <th>Description</th>
                         <th>Start Date</th>
                         <th>End Date</th>
+                        <th>status</th>
+                        <th>Priority</th>
                         <th>Deleted At</th>
                         <th>Restore</th>
                         <th>Force Delete</th>
@@ -39,6 +41,8 @@
                         { data: 'description', name: 'description' },
                         { data: 'start_date', name: 'start_date' },
                         { data: 'end_date', name: 'end_date' },
+                        { data: 'status', name: 'status' },
+                        { data: 'priority', name: 'priority' },
                         { data: 'deleted_at', name: 'deleted_at' },
                         { data: 'restore', name: 'restore', orderable: false, searchable: false },
                         { data: 'delete', name: 'delete', orderable: false, searchable: false },

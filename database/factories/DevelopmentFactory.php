@@ -25,7 +25,6 @@ class DevelopmentFactory extends Factory
             'phone' => $this->faker->phoneNumber,
             'address' => $this->faker->address,
             'image' => 'developments/' . $this->faker->randomElement($dummyImages),
-            'department_id' => Department::inRandomOrder()->first()->id,
         ];
     }
 }

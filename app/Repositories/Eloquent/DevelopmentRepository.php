@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Models\Development;
 use App\Repositories\Interfaces\DevelopmentRepositoryInterface;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 
 class DevelopmentRepository implements DevelopmentRepositoryInterface
@@ -16,7 +17,7 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
 
     public function find($id)
     {
-        return Development::with(['department', 'projects'])->findOrFail($id);
+        return Development::with(['departments', 'projects'])->findOrFail($id);
     }
 
     public function create(array $data)
@@ -47,6 +48,7 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
 
         $development->fill($data)->save();
         $this->syncProjects($development, $data);
+        $this->syncDepartment($development, $data);
 
         return $development;
     }
@@ -56,6 +58,22 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
         if (!empty($data['project_ids'])) {
             $development->projects()->sync($data['project_ids']);
         }
+    }
+
+    private function syncDepartment(Development $development, array $data): void
+    {
+        if (!empty($data['department_id'])) {
+        // Manually build pivot data with UUIDs
+        $syncData = [];
+
+        foreach ((array)$data['department_id'] as $deptId) {
+            $syncData[$deptId] = [
+                'id' => (string) Str::uuid(), // generates a UUID for each pivot row
+            ];
+        }
+
+        $development->departments()->sync($syncData);
+    }
     }
 
     public function delete($id)

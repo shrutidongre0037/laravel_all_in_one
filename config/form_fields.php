@@ -110,10 +110,27 @@ return [
             'placeholder' => 'Start date',
             'required' => true,
         ],
+        
         [
             'type' => 'date',
             'name' => 'end_date',
             'placeholder' => 'End date',
+            'required' => true,
+        ],
+        [
+            'type' => 'select',
+            'name' => 'status',
+            'label' => 'Select Status',
+            'options' => 'statuses', // variable to be passed from controller
+            'optionLabel' => 'label',
+            'required' => true,
+        ],
+        [
+            'type' => 'select',
+            'name' => 'priority',
+            'label' => 'Select Priority',
+            'options' => 'priorities', // variable to be passed from controller
+            'optionLabel' => 'label',
             'required' => true,
         ],
     ],

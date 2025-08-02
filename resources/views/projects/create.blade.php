@@ -3,7 +3,10 @@
         <h2 class="text-xl font-bold mb-4">Add Project</h2>
         <form method="POST" action="{{ route('projects.store') }}" enctype="multipart/form-data">
             @csrf
-            @include('projects.form', ['submitButtonText' => 'Create'])
+            @include('projects.form', [
+                'submitButtonText' => 'Create',
+                'projects' => null
+            ])
         </form>
     </div>
     @if ($errors->any())

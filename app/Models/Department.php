@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\ModelEventLogger;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Traits\RelationshipTrait;
 
 
 class Department extends Model
 {
-    use HasFactory,ModelEventLogger,SoftDeletes;
+    use HasFactory,ModelEventLogger,SoftDeletes,RelationshipTrait;
     protected $connection = 'tenant';
     protected $fillable=['name'];
     public $incrementing = false;
@@ -27,10 +27,11 @@ class Department extends Model
     {
         return ucwords($value);
     }
-
-    public function developments()
-    {
-        return $this->hasMany(Development::class);
-    }
+public function developments()
+{
+    return $this->belongsToMany(Development::class, 'department_development')->withPivot('id')
+        ->withTimestamps();
+}
+    
 
 }

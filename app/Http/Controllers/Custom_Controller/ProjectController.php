@@ -27,8 +27,19 @@ class ProjectController extends Controller
             $project = Project::onlyTrashed()->get();
             return view('projects.restored', compact('project'));
         } else {
+            $statuses = collect([
+            (object)['id' => 'pending', 'label' => 'Pending'],
+            (object)['id' => 'In progress', 'label' => 'In Progress'],
+            (object)['id' => 'completed', 'label' => 'Completed'],
+        ]);
+
+        $priorities = collect([
+            (object)['id' => 'low', 'label' => 'Low'],
+            (object)['id' => 'medium', 'label' => 'Medium'],
+            (object)['id' => 'high', 'label' => 'High'],
+        ]);
             $project = $this->projectRepo->all();
-            return view('projects.index', compact('project'));
+            return view('projects.index', compact('project','statuses','priorities'));
 
         }
     }
@@ -38,7 +49,18 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('projects.create');
+        $statuses = collect([
+        (object)['id' => 'pending', 'label' => 'Pending'],
+        (object)['id' => 'In progress', 'label' => 'In Progress'],
+        (object)['id' => 'completed', 'label' => 'Completed'],
+    ]);
+
+    $priorities = collect([
+        (object)['id' => 'low', 'label' => 'Low'],
+        (object)['id' => 'medium', 'label' => 'Medium'],
+        (object)['id' => 'high', 'label' => 'High'],
+    ]);
+        return view('projects.create',compact('statuses','priorities'));
     }
 
     /**
@@ -66,8 +88,19 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
+         $statuses = collect([
+        (object)['id' => 'pending', 'label' => 'Pending'],
+        (object)['id' => 'In progress', 'label' => 'In Progress'],
+        (object)['id' => 'completed', 'label' => 'Completed'],
+    ]);
+
+    $priorities = collect([
+        (object)['id' => 'low', 'label' => 'Low'],
+        (object)['id' => 'medium', 'label' => 'Medium'],
+        (object)['id' => 'high', 'label' => 'High'],
+    ]);
         $project = $this->projectRepo->find($id);
-        return view('projects.edit', compact('project'));
+        return view('projects.edit', compact('project','statuses','priorities'));
     }
 
     /**

@@ -19,12 +19,17 @@
             <strong>Address:</strong> {{ $development->address }}
         </div>
         <div class="mb-4">
-    <strong>Department:</strong> {{ $development->department->name ?? 'N/A' }}
-</div>
+            <strong>Department:</strong>
+            @if($development->departments && $development->departments->count())
+                @foreach($development->departments as $dept)
+                    {{ $dept->name }}
+                @endforeach
+            @endif
+        </div>
 
 <div class="mb-4 ml-0">
     <strong>Projects:</strong>
-    @if($development->projects->isNotEmpty())
+    @if($development->projects && $development->projects->count())
         <ul class="list-disc list-inside text-center">
             @foreach($development->projects as $project)
                 <a href="{{ route('projects.show', ['project' => $project->id])}}?from=development&employee_id={{ $development->id }}" target="_self"><li>{{ $project->title }}</a></li>
@@ -36,8 +41,33 @@
 </div>
 
         
+<hr class="my-6">
 
-        <a href="{{ route('developments.index') }}" class="inline-block mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
+        <div class="mb-4 text-left">
+            <h3 class="text-lg font-bold mb-2">Profile Links</h3>
+            @if($development->profileLink && $development->profileLink->profile)
+            @php $profile = $development->profileLink->profile ?? null; @endphp
+                <p><strong>LinkedIn:</strong>
+                    <a href="{{ $profile->linkedin }}" target="_blank" class="text-blue-600 underline">{{ $profile->linkedin }}</a>
+                </p>
+                <p><strong>GitHub:</strong>
+                    <a href="{{ $profile->github }}" target="_blank" class="text-blue-600 underline">{{ $profile->github }}</a>
+                </p>
+                <a href="{{ route('profiles.edit', $profile->id) }}"
+                   class="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                    Edit Profile
+                </a>
+            @else
+                <p class="text-gray-500">No profile information available.</p>
+                <a href="{{ route('profiles.create', ['development_id' => $development->id]) }}"
+                   class="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                    Create Profile
+                </a>
+            @endif
+        </div>
+
+        <a href="{{ route('developments.index') }}"
+           class="inline-block mt-6 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
             Back
         </a>
     </div>

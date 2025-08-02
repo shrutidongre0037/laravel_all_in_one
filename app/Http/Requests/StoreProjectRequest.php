@@ -26,6 +26,8 @@ class StoreProjectRequest extends FormRequest
             'description' => 'nullable|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
+            'status' => 'required|in:pending,In progress,completed',
+            'priority' => 'required|in:low,medium,high',
         ];
     }
 
@@ -36,6 +38,8 @@ class StoreProjectRequest extends FormRequest
             'description' => 'Project description',
             'start_date' => 'Start Date',
             'end_date' => 'End Date',
+            'status' => 'Status',
+            'priority' => 'Priority'
         ];
     }
 
@@ -53,6 +57,11 @@ class StoreProjectRequest extends FormRequest
             'end_date.date' => 'End Date must be valid date.',
             'end_date.after_or_equal' => 'End date must be after or equal to the start date.',
 
+            'status.required' => 'Please select a status.',
+            'status.in' => 'Selected status is invalid.',
+
+            'priority.required' => 'Please select a priority.',
+            'priority.in' => 'Selected priority is invalid.',
 
         ];      
     }

@@ -18,10 +18,6 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('image')->nullable();
-
-            $table->uuid('department_id');
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
-            
             $table->softDeletes();
             $table->timestamps();
         });

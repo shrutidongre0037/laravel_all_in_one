@@ -67,12 +67,14 @@
                 { data: 'phone' },
                 { data: 'address' },
                 { data: 'image', orderable: false, searchable: false },
-                { data: 'department', name: 'department' },
+                { data: 'departments', name: 'departments' },
                 { data: 'projects', name: 'projects', orderable: false, searchable: false },
+                // { data: 'updated_at', name: 'updated_at', visible: false }, 
                 { data: 'edit', orderable: false, searchable: false },
                 { data: 'delete', orderable: false, searchable: false },
                 { data: 'view', orderable: false, searchable: false },
-            ]
+            ],
+            // order: [[8, 'desc']],
         });
     });
 
